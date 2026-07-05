@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>DROP/01 — Streetwear Tee Shop</title>
+
+<!-- ===================== Telegram Mini App SDK ===================== -->
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<!-- ===================== RichAds Ad Tag (as provided) ===================== -->
+<script src="https://richinfo.co/richpartners/telegram/js/tg-ob.js"></script>
+<script>
+  window.TelegramAdsController = new TelegramAdsController();
+  window.TelegramAdsController.initialize({
+    pubId: "1016473",
+    appId: "7983",
+  });
+</script>
+
+<!-- ===================== Fonts ===================== -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --ink:#0B0B0C;
+    --canvas:#EDEAE3;
+    --canvas-soft:#E2DED3;
+    --orange:#FF5A1F;
+    --denim:#2B4570;
+    --grey:#8A857D;
+    --white:#FFFFFF;
+    --radius:2px;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{-webkit-tap-highlight-color:transparent;}
+  body{
+    background:var(--canvas);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.5;
+    overflow-x:hidden;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+
+  h1,h2,h3{
+    font-family:'Archivo Black', sans-serif;
+    text-transform:uppercase;
+    line-height:0.95;
+    letter-spacing:-0.01em;
+  }
+
+  .mono{
+    font-family:'JetBrains Mono', monospace;
+  }
+
+  a{ color:inherit; text-decoration:none; }
+  button{ font-family:inherit; cursor:pointer; border:none; background:none; }
+  img{ display:block; max-width:100%; }
+
+  /* ===================== Marquee ticker ===================== */
+  .ticker{
+    background:var(--ink);
+    color:var(--canvas);
+    overflow:hidden;
+    white-space:nowrap;
+    padding:8px 0;
+    border-bottom:2px solid var(--orange);
+  }
+  .ticker-track{
+    display:inline-block;
+    animation:scroll-left 18s linear infinite;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.08em;
+  }
+  .ticker-track span{ margin-right:40px; }
+  .ticker-track span::before{ content:"● "; color:var(--orange); }
+  @keyframes scroll-left{
+    0%{ transform:translateX(0); }
+    100%{ transform:translateX(-50%); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .ticker-track{ animation:none; }
+  }
+
+  /* ===================== Header ===================== */
+  header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:16px 20px;
+    position:sticky;
+    top:0;
+    background:var(--canvas);
+    z-index:50;
+    border-bottom:1px solid rgba(11,11,12,0.1);
+  }
+  .logo{
+    font-family:'Archivo Black', sans-serif;
+    font-size:20px;
+    text-transform:uppercase;
+  }
+  .logo span{ color:var(--orange); }
+  nav.tabs{
+    display:flex;
+    gap:4px;
+    background:var(--ink);
+    border-radius:999px;
+    padding:4px;
+  }
+  nav.tabs button{
+    color:var(--canvas);
+    font-size:12px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    padding:8px 14px;
+    border-radius:999px;
+    transition:background 0.2s ease;
+  }
+  nav.tabs button.active{
+    background:var(--orange);
+    color:var(--ink);
+  }
+
+  /* ===================== Views ===================== */
+  .view{ display:none; }
+  .view.active{ display:block; animation:fade-in 0.35s ease; }
+  @keyframes fade-in{
+    from{ opacity:0; transform:translateY(6px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  /* ===================== Hero ===================== */
+  .hero{
+    padding:36px 20px 28px;
+    position:relative;
+  }
+  .hero .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--denim);
+    letter-spacing:0.1em;
+    margin-bottom:10px;
+  }
+  .hero h1{
+    font-size:52px;
+    margin-bottom:14px;
+  }
+  .hero h1 .stamp{
+    display:inline-block;
+    color:var(--orange);
+    transform:rotate(-3deg);
+  }
+  .hero p.lede{
+    font-size:15px;
+    color:#3a3936;
+    max-width:34ch;
+    margin-bottom:22px;
+  }
+  .hero-cta{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:14px 22px;
+    font-weight:700;
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    border-radius:var(--radius);
+  }
+  .btn-primary{
+    background:var(--ink);
+    color:var(--canvas);
+  }
+  .btn-primary:active{ background:var(--orange); color:var(--ink); }
+  .btn-outline{
+    background:transparent;
+    color:var(--ink);
+    border:2px solid var(--ink);
+  }
+
+  .hero-tag{
+    position:absolute;
+    right:18px;
+    top:34px;
+    width:78px;
+    height:78px;
+    border-radius:50%;
+    background:var(--orange);
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    font-weight:700;
+    line-height:1.2;
+    transform:rotate(8deg);
+    box-shadow:0 6px 0 rgba(11,11,12,0.15);
+  }
+
+  /* ===================== Ad slot ===================== */
+  .ad-slot{
+    margin:0 20px 24px;
+    min-height:50px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px dashed var(--grey);
+    color:var(--grey);
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    border-radius:var(--radius);
+  }
+
+  /* ===================== Section headers ===================== */
+  .section{ padding:8px 20px 36px; }
+  .section-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:16px;
+    border-bottom:2px solid var(--ink);
+    padding-bottom:8px;
+  }
+  .section-head h2{ font-size:24px; }
+  .section-head .count{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--grey);
+  }
+
+  /* ===================== Drop info strip ===================== */
+  .info-strip{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-bottom:8px;
+  }
+  .info-card{
+    background:var(--white);
+    padding:14px 10px;
+    text-align:center;
+    border-radius:var(--radius);
+    border:1px solid rgba(11,11,12,0.08);
+  }
+  .info-card .num{
+    font-family:'Archivo Black', sans-serif;
+    font-size:22px;
+    color:var(--denim);
+  }
+  .info-card .lbl{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    text-transform:uppercase;
+    color:var(--grey);
+    margin-top:4px;
+  }
+
+  /* ===================== Product grid (tag cards) ===================== */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:14px;
+  }
+  .tag-card{
+    background:var(--white);
+    border-radius:var(--radius);
+    overflow:hidden;
+    position:relative;
+    border:1px solid rgba(11,11,12,0.08);
+  }
+  .tag-card .punch{
+    position:absolute;
+    top:10px;
+    left:10px;
+    width:14px;
+    height:14px;
+    background:var(--canvas);
+    border-radius:50%;
+    border:1px solid rgba(11,11,12,0.15);
+    z-index:2;
+  }
+  .tag-card .thumb{
+    aspect-ratio:1/1;
+    background:var(--canvas-soft);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .tag-card .thumb img{ width:100%; height:100%; object-fit:cover; }
+  .tag-card .body{ padding:12px; }
+  .tag-card .sku{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    color:var(--grey);
+    text-transform:uppercase;
+  }
+  .tag-card h3{
+    font-size:15px;
+    margin:6px 0 8px;
+    text-transform:none;
+    font-family:'Inter',sans-serif;
+    font-weight:800;
+  }
+  .tag-card .price-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .tag-card .price{
+    font-family:'JetBrains Mono', monospace;
+    font-weight:700;
+    font-size:14px;
+  }
+  .tag-card .buy{
+    background:var(--ink);
+    color:var(--canvas);
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+    padding:8px 12px;
+    border-radius:var(--radius);
+  }
+  .tag-card .buy:active{ background:var(--orange); color:var(--ink); }
+  .tag-card .badge{
+    position:absolute;
+    top:10px;
+    right:10px;
+    background:var(--orange);
+    color:var(--ink);
+    font-family:'JetBrains Mono', monospace;
+    font-size:9px;
+    font-weight:700;
+    text-transform:uppercase;
+    padding:3px 7px;
+    border-radius:2px;
+    z-index:2;
+  }
+
+  /* ===================== Size guide accordion ===================== */
+  .accordion-item{
+    border-bottom:1px solid rgba(11,11,12,0.12);
+  }
+  .accordion-head{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:16px 4px;
+    font-weight:700;
+    font-size:14px;
+    text-align:left;
+  }
+  .accordion-head .plus{
+    font-family:'JetBrains Mono', monospace;
+    font-size:18px;
+    transition:transform 0.2s ease;
+  }
+  .accordion-item.open .plus{ transform:rotate(45deg); }
+  .accordion-panel{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height 0.25s ease;
+    font-size:13px;
+    color:#3a3936;
+  }
+  .accordion-item.open .accordion-panel{ max-height:220px; }
+  .accordion-panel .inner{ padding:0 4px 16px; }
+
+  table.size-table{
+    width:100%;
+    border-collapse:collapse;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    margin-top:6px;
+  }
+  table.size-table th, table.size-table td{
+    border:1px solid rgba(11,11,12,0.15);
+    padding:6px 4px;
+    text-align:center;
+  }
+  table.size-table th{ background:var(--ink); color:var(--canvas); }
+
+  /* ===================== Trust strip ===================== */
+  .trust{
+    display:flex;
+    gap:10px;
+    overflow-x:auto;
+    padding-bottom:6px;
+  }
+  .trust-item{
+    flex:0 0 auto;
+    background:var(--denim);
+    color:var(--canvas);
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    padding:10px 14px;
+    border-radius:999px;
+    white-space:nowrap;
+  }
+
+  /* ===================== Sticky bottom bar (link page) ===================== */
+  .sticky-cta{
+    position:sticky;
+    bottom:0;
+    background:var(--ink);
+    color:var(--canvas);
+    padding:14px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    border-top:2px solid var(--orange);
+  }
+  .sticky-cta .txt{ font-size:12px; color:var(--grey); }
+  .sticky-cta .txt b{ color:var(--canvas); display:block; font-size:14px; }
+  .sticky-cta .btn{ padding:12px 18px; }
+
+  /* ===================== Footer ===================== */
+  footer{
+    padding:28px 20px 40px;
+    text-align:center;
+  }
+  footer .foot-logo{
+    font-family:'Archivo Black', sans-serif;
+    font-size:16px;
+    margin-bottom:8px;
+  }
+  footer .socials{
+    display:flex;
+    gap:14px;
+    justify-content:center;
+    margin:14px 0;
+  }
+  footer .socials a{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    border-bottom:1px solid var(--ink);
+  }
+  footer .fine{
+    font-size:11px;
+    color:var(--grey);
+    margin-top:10px;
+  }
+
+  /* ===================== Toast ===================== */
+  #toast{
+    position:fixed;
+    left:50%;
+    bottom:90px;
+    transform:translate(-50%, 20px);
+    background:var(--ink);
+    color:var(--canvas);
+    padding:10px 18px;
+    border-radius:999px;
+    font-size:12px;
+    opacity:0;
+    pointer-events:none;
+    transition:all 0.25s ease;
+    z-index:200;
+    font-family:'JetBrains Mono', monospace;
+  }
+  #toast.show{
+    opacity:1;
+    transform:translate(-50%, 0);
+  }
+</style>
+</head>
+<body>
+
+  <!-- ===================== Ticker ===================== -->
+  <div class="ticker">
+    <div class="ticker-track" id="tickerTrack">
+      <span>FREE DELIVERY ঢাকার ভিতরে অর্ডার ১৫০০৳+</span>
+      <span>DROP 01 — লিমিটেড স্টক, স্টক শেষ হলে আর আসবে না</span>
+      <span>COD available সারা বাংলাদেশে</span>
+      <span>FREE DELIVERY ঢাকার ভিতরে অর্ডার ১৫০০৳+</span>
+      <span>DROP 01 — লিমিটেড স্টক, স্টক শেষ হলে আর আসবে না</span>
+      <span>COD available সারা বাংলাদেশে</span>
+    </div>
+  </div>
+
+  <!-- ===================== Header / Nav ===================== -->
+  <header>
+    <div class="logo">DROP<span>/01</span></div>
+    <nav class="tabs">
+      <button class="tab-btn active" data-view="landing">Home</button>
+      <button class="tab-btn" data-view="shop">Shop</button>
+    </nav>
+  </header>
+
+  <!-- ===================== LANDING VIEW ===================== -->
+  <section class="view active" id="landing">
+
+    <div class="hero">
+      <div class="hero-tag">STOCK<br>LIMITED</div>
+      <div class="eyebrow">// NEW ARRIVAL — SS26 CAPSULE</div>
+      <h1>বাংলাদেশের<br><span class="stamp">স্ট্রিটওয়্যার</span><br>টি-শার্ট</h1>
+      <p class="lede">১০০% কটন, ওভারসাইজড ফিট, প্রিমিয়াম প্রিন্ট। ঢাকা থেকে সারা দেশে ডেলিভারি।</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary" onclick="goToShop()">শপ করুন →</button>
+        <a class="btn btn-outline" href="#sizeGuide" onclick="switchView('shop')">সাইজ গাইড</a>
+      </div>
+    </div>
+
+    <!-- RichAds banner slot -->
+    <div class="ad-slot" id="ad-slot-1">Advertisement</div>
+
+    <div class="section">
+      <div class="info-strip">
+        <div class="info-card">
+          <div class="num">08</div>
+          <div class="lbl">Designs</div>
+        </div>
+        <div class="info-card">
+          <div class="num">100%</div>
+          <div class="lbl">Cotton</div>
+        </div>
+        <div class="info-card">
+          <div class="num">24H</div>
+          <div class="lbl">Dispatch</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2>কেন আমাদের থেকে নিবেন</h2>
+      </div>
+      <div class="trust">
+        <div class="trust-item">✓ প্রিমিয়াম কটন ফেব্রিক</div>
+        <div class="trust-item">✓ কালার ফেড হবে না</div>
+        <div class="trust-item">✓ ক্যাশ অন ডেলিভারি</div>
+        <div class="trust-item">✓ ৭ দিন এক্সচেঞ্জ</div>
+        <div class="trust-item">✓ সরাসরি টেলিগ্রামে অর্ডার</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2>ফিচারড</h2>
+        <span class="count">04 items</span>
+      </div>
+      <div class="grid" id="featuredGrid"></div>
+    </div>
+
+    <div class="ad-slot" id="ad-slot-2">Advertisement</div>
+
+  </section>
+
+  <!-- ===================== SHOP / LINK VIEW ===================== -->
+  <section class="view" id="shop">
+
+    <div class="section" style="padding-top:24px;">
+      <div class="section-head">
+        <h2>সব টি-শার্ট</h2>
+        <span class="count" id="shopCount">08 items</span>
+      </div>
+      <div class="grid" id="shopGrid"></div>
+    </div>
+
+    <div class="section" id="sizeGuide">
+      <div class="section-head">
+        <h2>সাইজ গাইড</h2>
+      </div>
+
+      <div class="accordion-item open">
+        <button class="accordion-head" onclick="toggleAcc(this)">
+          চার্ট অনুযায়ী মাপ দেখুন
+          <span class="plus">+</span>
+        </button>
+        <div class="accordion-panel">
+          <div class="inner">
+            <table class="size-table">
+              <tr><th>Size</th><th>Chest (in)</th><th>Length (in)</th></tr>
+              <tr><td>M</td><td>40</td><td>27</td></tr>
+              <tr><td>L</td><td>42</td><td>28</td></tr>
+              <tr><td>XL</td><td>44</td><td>29</td></tr>
+              <tr><td>XXL</td><td>46</td><td>30</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-head" onclick="toggleAcc(this)">
+          ডেলিভারি ও পেমেন্ট
+          <span class="plus">+</span>
+        </button>
+        <div class="accordion-panel">
+          <div class="inner">
+            ঢাকার ভিতরে ২৪-৪৮ ঘণ্টা, ঢাকার বাইরে ৩-৫ দিন। ক্যাশ অন ডেলিভারি এবং বিকাশ/নগদে পেমেন্ট করা যাবে।
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-head" onclick="toggleAcc(this)">
+          রিটার্ন / এক্সচেঞ্জ পলিসি
+          <span class="plus">+</span>
+        </button>
+        <div class="accordion-panel">
+          <div class="inner">
+            প্রোডাক্ট হাতে পাওয়ার ৭ দিনের মধ্যে সাইজ এক্সচেঞ্জ করা যাবে, প্যাকেট আনবক্সিং ভিডিওসহ যোগাযোগ করতে হবে।
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ad-slot" id="ad-slot-3">Advertisement</div>
+
+    <div class="sticky-cta">
+      <div class="txt">অর্ডার করতে<b>টেলিগ্রামে মেসেজ করুন</b></div>
+      <a class="btn btn-primary" id="orderNowBtn" href="https://t.me/your_shop_username" target="_blank" rel="noopener">অর্ডার করুন</a>
+    </div>
+
+  </section>
+
+  <!-- ===================== Footer ===================== -->
+  <footer>
+    <div class="foot-logo">DROP/01</div>
+    <p class="mono" style="font-size:11px;color:var(--grey);">STREETWEAR MADE IN BANGLADESH</p>
+    <div class="socials">
+      <a href="https://t.me/your_shop_username" target="_blank" rel="noopener">Telegram</a>
+      <a href="#" target="_blank" rel="noopener">Facebook</a>
+      <a href="#" target="_blank" rel="noopener">Instagram</a>
+    </div>
+    <p class="fine">© 2026 DROP/01. সব রাইট সংরক্ষিত।</p>
+  </footer>
+
+  <div id="toast"></div>
+
+<script>
+  /* ===================== Telegram WebApp init ===================== */
+  (function initTelegram(){
+    try{
+      var tg = window.Telegram && window.Telegram.WebApp;
+      if(tg){
+        tg.ready();
+        tg.expand();
+        if(tg.setHeaderColor) tg.setHeaderColor('#0B0B0C');
+        if(tg.setBackgroundColor) tg.setBackgroundColor('#EDEAE3');
+      }
+    }catch(e){ console.warn('Telegram WebApp not available:', e); }
+  })();
+
+  /* ===================== Product data ===================== */
+  var PRODUCTS = [
+    { sku:'TS-001', name:'Oversized Ink Black Tee', price:650, badge:'NEW', img:'https://placehold.co/400x400/0B0B0C/EDEAE3?text=TEE+01', link:'https://t.me/your_shop_username?text=Order+TS-001' },
+    { sku:'TS-002', name:'Denim Blue Graphic Tee', price:700, badge:'HOT', img:'https://placehold.co/400x400/2B4570/EDEAE3?text=TEE+02', link:'https://t.me/your_shop_username?text=Order+TS-002' },
+    { sku:'TS-003', name:'Canvas Cream Plain Tee', price:550, badge:'', img:'https://placehold.co/400x400/EDEAE3/0B0B0C?text=TEE+03', link:'https://t.me/your_shop_username?text=Order+TS-003' },
+    { sku:'TS-004', name:'Safety Orange Statement Tee', price:750, badge:'LIMITED', img:'https://placehold.co/400x400/FF5A1F/0B0B0C?text=TEE+04', link:'https://t.me/your_shop_username?text=Order+TS-004' },
+    { sku:'TS-005', name:'Two-Tone Panel Tee', price:800, badge:'', img:'https://placehold.co/400x400/8A857D/0B0B0C?text=TEE+05', link:'https://t.me/your_shop_username?text=Order+TS-005' },
+    { sku:'TS-006', name:'Minimal Logo Tee', price:600, badge:'', img:'https://placehold.co/400x400/0B0B0C/FF5A1F?text=TEE+06', link:'https://t.me/your_shop_username?text=Order+TS-006' },
+    { sku:'TS-007', name:'Heavyweight Boxy Tee', price:850, badge:'NEW', img:'https://placehold.co/400x400/2B4570/FFFFFF?text=TEE+07', link:'https://t.me/your_shop_username?text=Order+TS-007' },
+    { sku:'TS-008', name:'Vintage Wash Tee', price:720, badge:'', img:'https://placehold.co/400x400/EDEAE3/2B4570?text=TEE+08', link:'https://t.me/your_shop_username?text=Order+TS-008' }
+  ];
+
+  function cardHTML(p){
+    var badge = p.badge ? '<div class="badge">'+p.badge+'</div>' : '';
+    return (
+      '<div class="tag-card">' +
+        '<span class="punch"></span>' +
+        badge +
+        '<div class="thumb"><img src="'+p.img+'" alt="'+p.name+'" loading="lazy"></div>' +
+        '<div class="body">' +
+          '<div class="sku">'+p.sku+'</div>' +
+          '<h3>'+p.name+'</h3>' +
+          '<div class="price-row">' +
+            '<span class="price">৳'+p.price+'</span>' +
+            '<a class="buy" href="'+p.link+'" target="_blank" rel="noopener" onclick="notifyBuy(\''+p.sku+'\')">কিনুন</a>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function renderGrids(){
+    var featured = PRODUCTS.slice(0,4).map(cardHTML).join('');
+    document.getElementById('featuredGrid').innerHTML = featured;
+
+    var all = PRODUCTS.map(cardHTML).join('');
+    document.getElementById('shopGrid').innerHTML = all;
+    document.getElementById('shopCount').textContent = PRODUCTS.length + ' items';
+  }
+  renderGrids();
+
+  /* ===================== View switching ===================== */
+  function switchView(name){
+    document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('active'); });
+    document.getElementById(name).classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach(function(b){
+      b.classList.toggle('active', b.dataset.view === name);
+    });
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  document.querySelectorAll('.tab-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){ switchView(btn.dataset.view); });
+  });
+  function goToShop(){ switchView('shop'); }
+
+  /* ===================== Accordion ===================== */
+  function toggleAcc(headerEl){
+    var item = headerEl.parentElement;
+    var wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.accordion-item').forEach(function(i){ i.classList.remove('open'); });
+    if(!wasOpen) item.classList.add('open');
+  }
+
+  /* ===================== Toast + Telegram haptics ===================== */
+  var toastEl = document.getElementById('toast');
+  var toastTimer;
+  function notifyBuy(sku){
+    try{
+      var tg = window.Telegram && window.Telegram.WebApp;
+      if(tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+    }catch(e){}
+    toastEl.textContent = sku + ' — টেলিগ্রামে ওপেন হচ্ছে...';
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, 2200);
+  }
+</script>
+
+</body>
+</html>
